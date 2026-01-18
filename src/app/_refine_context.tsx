@@ -1,13 +1,12 @@
 "use client";
 
 import { Refine } from "@refinedev/core";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { RefineKbarProvider } from "@refinedev/kbar";
 import React from "react";
 
 import routerProvider from "@refinedev/nextjs-router";
 
 import "@/app/globals.css";
-import { Toaster } from "@/components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "@/components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "@/components/refine-ui/theme/theme-provider";
 import { dataProvider } from "@providers/data-provider";
