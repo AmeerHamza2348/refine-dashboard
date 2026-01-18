@@ -3,6 +3,10 @@ import { createDataProvider, CreateDataProviderOptions } from "@refinedev/rest";
 import { CreateResponse, GetOneResponse, ListResponse } from "@/types";
 import { BACKEND_BASE_URL } from "@/constants";
 
+if(!BACKEND_BASE_URL) {
+    throw new Error("BACKEND_BASE_URL is required");
+}
+
 const options: CreateDataProviderOptions = {
     getList: {
         getEndpoint: ({ resource }) => resource,
@@ -11,8 +15,7 @@ const options: CreateDataProviderOptions = {
             const params: Record<string, string | number> = {};
 
             if (pagination?.mode !== "off") {
-                // Use 'current' instead of 'currentPage' for Refine v4+
-                const page = (pagination as any)?.current ?? 1;
+                const page = pagination?.currentPage ?? 1;
                 const pageSize = pagination?.pageSize ?? 10;
 
                 params.page = page;
@@ -53,15 +56,12 @@ const options: CreateDataProviderOptions = {
         },
 
         mapResponse: async (response) => {
-            // Parse JSON once and store it on the response object
-            const payload: ListResponse = await response.json();
-            (response as any).__parsedJson = payload;
+            const payload: ListResponse = await response.clone().json();
             return payload.data ?? [];
         },
 
         getTotalCount: async (response) => {
-            // Reuse the parsed JSON from mapResponse
-            const payload: ListResponse = (response as any).__parsedJson;
+            const payload: ListResponse = await response.clone().json();
             return payload.pagination?.total ?? payload.data?.length ?? 0;
         },
     },
@@ -87,13 +87,6 @@ const options: CreateDataProviderOptions = {
     },
 };
 
-// Validate BACKEND_BASE_URL before it is creating data provider
-if (!BACKEND_BASE_URL) {
-    throw new Error(
-        "BACKEND_BASE_URL is not defined. Please set NEXT_PUBLIC_BACKEND_BASE_URL in your .env file."
-    );
-}
-
-const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL!, options);
 
 export { dataProvider };
