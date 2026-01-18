@@ -87,7 +87,7 @@ const options: CreateDataProviderOptions = {
     },
 };
 
-// Validate BACKEND_BASE_URL before creating data provider
+// Validate BACKEND_BASE_URL before it is creating data provider
 if (!BACKEND_BASE_URL) {
     throw new Error(
         "BACKEND_BASE_URL is not defined. Please set NEXT_PUBLIC_BACKEND_BASE_URL in your .env file."
