@@ -11,7 +11,8 @@ const options: CreateDataProviderOptions = {
             const params: Record<string, string | number> = {};
 
             if (pagination?.mode !== "off") {
-                const page = pagination?.currentPage ?? 1;
+                // Use 'current' instead of 'currentPage' for Refine v4+
+                const page = (pagination as any)?.current ?? 1;
                 const pageSize = pagination?.pageSize ?? 10;
 
                 params.page = page;
@@ -52,12 +53,15 @@ const options: CreateDataProviderOptions = {
         },
 
         mapResponse: async (response) => {
+            // Parse JSON once and store it on the response object
             const payload: ListResponse = await response.json();
+            (response as any).__parsedJson = payload;
             return payload.data ?? [];
         },
 
         getTotalCount: async (response) => {
-            const payload: ListResponse = await response.json();
+            // Reuse the parsed JSON from mapResponse
+            const payload: ListResponse = (response as any).__parsedJson;
             return payload.pagination?.total ?? payload.data?.length ?? 0;
         },
     },
@@ -83,6 +87,13 @@ const options: CreateDataProviderOptions = {
     },
 };
 
-const { dataProvider } = createDataProvider(BACKEND_BASE_URL!, options);
+// Validate BACKEND_BASE_URL before creating data provider
+if (!BACKEND_BASE_URL) {
+    throw new Error(
+        "BACKEND_BASE_URL is not defined. Please set NEXT_PUBLIC_BACKEND_BASE_URL in your .env file."
+    );
+}
+
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
 
 export { dataProvider };
