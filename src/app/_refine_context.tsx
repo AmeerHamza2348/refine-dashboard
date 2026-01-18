@@ -11,6 +11,9 @@ import { Toaster } from "@/components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "@/components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "@/components/refine-ui/theme/theme-provider";
 import { dataProvider } from "@providers/data-provider";
+import { BookOpen, LayoutDashboardIcon } from "lucide-react";
+import { Layout } from "@components/refine-ui/layout/layout";
+import { Outlet } from "react-router";
 
 type RefineContextProps = {
   children: React.ReactNode;
@@ -30,10 +33,24 @@ export const RefineContext = ({ children }: RefineContextProps) => {
             syncWithLocation: true,
             warnWhenUnsavedChanges: true,
           }}
+          resources={[
+            {
+              name: "dashboard",
+              list: "/dashboard",
+              meta: { label: "Dashboard", icon: <LayoutDashboardIcon /> },
+            },
+            {
+              name: "subjects",
+              list: "/subjects",
+              create: "/subjects/create",
+              meta: { label: "Subjects", icon: <BookOpen /> },
+            },
+          ]}
         >
-          {children}
-          <Toaster />
-          <RefineKbar />
+          <Layout>
+            <Outlet />
+            {children}
+          </Layout>
         </Refine>
       </ThemeProvider>
     </RefineKbarProvider>
