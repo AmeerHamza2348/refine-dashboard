@@ -13,6 +13,7 @@ import { dataProvider } from "@providers/data-provider";
 import { BookOpen, LayoutDashboardIcon } from "lucide-react";
 import { Layout } from "@components/refine-ui/layout/layout";
 import { Outlet } from "react-router";
+import {Toaster} from "@components/refine-ui/notification/toaster";
 
 type RefineContextProps = {
   children: React.ReactNode;
@@ -49,6 +50,7 @@ export const RefineContext = ({ children }: RefineContextProps) => {
           <Layout>
             <Outlet />
             {children}
+            <Toaster />
           </Layout>
         </Refine>
       </ThemeProvider>
